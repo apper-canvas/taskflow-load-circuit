@@ -1,0 +1,102 @@
+[
+  {
+    "Id": 1,
+    "title": "Review quarterly performance reports",
+    "completed": false,
+    "priority": "high",
+    "category": "work",
+    "dueDate": "2024-12-28",
+    "createdAt": "2024-12-20T10:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 2,
+    "title": "Prepare presentation for Monday meeting",
+    "completed": false,
+    "priority": "high",
+    "category": "work",
+    "dueDate": "2024-12-30",
+    "createdAt": "2024-12-20T11:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 3,
+    "title": "Schedule dentist appointment",
+    "completed": false,
+    "priority": "medium",
+    "category": "personal",
+    "dueDate": "2024-12-29",
+    "createdAt": "2024-12-20T12:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 4,
+    "title": "Buy groceries for the week",
+    "completed": true,
+    "priority": "medium",
+    "category": "personal",
+    "dueDate": "2024-12-27",
+    "createdAt": "2024-12-20T13:00:00Z",
+    "completedAt": "2024-12-27T18:30:00Z"
+  },
+  {
+    "Id": 5,
+    "title": "Research new project management tools",
+    "completed": false,
+    "priority": "low",
+    "category": "work",
+    "dueDate": "2025-01-05",
+    "createdAt": "2024-12-20T14:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 6,
+    "title": "Call mom for birthday planning",
+    "completed": false,
+    "priority": "high",
+    "category": "personal",
+    "dueDate": "2024-12-28",
+    "createdAt": "2024-12-20T15:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 7,
+    "title": "Update portfolio website",
+    "completed": false,
+    "priority": "medium",
+    "category": "projects",
+    "dueDate": "2025-01-10",
+    "createdAt": "2024-12-20T16:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 8,
+    "title": "Read 30 pages of current book",
+    "completed": true,
+    "priority": "low",
+    "category": "personal",
+    "dueDate": "2024-12-27",
+    "createdAt": "2024-12-20T17:00:00Z",
+    "completedAt": "2024-12-27T21:00:00Z"
+  },
+  {
+    "Id": 9,
+    "title": "Plan weekend hiking trip",
+    "completed": false,
+    "priority": "low",
+    "category": "leisure",
+    "dueDate": "2024-12-29",
+    "createdAt": "2024-12-20T18:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 10,
+    "title": "Submit expense reports",
+    "completed": false,
+    "priority": "high",
+    "category": "work",
+    "dueDate": "2024-12-31",
+    "createdAt": "2024-12-20T19:00:00Z",
+    "completedAt": null
+  }
+]
