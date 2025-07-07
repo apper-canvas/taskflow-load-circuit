@@ -76,7 +76,7 @@ const TaskItem = ({
         </div>
       )}
 
-      <div className="flex items-start gap-3">
+<div className="flex items-start gap-3">
         <div className="flex items-center gap-2 mt-1">
           <Checkbox
             checked={task.completed}
@@ -86,12 +86,16 @@ const TaskItem = ({
           <button
             onClick={onSelect}
             className={cn(
-              "w-4 h-4 rounded border-2 transition-all duration-200",
+              "w-4 h-4 rounded-full border-2 transition-all duration-200 relative",
               isSelected 
-                ? "bg-primary border-primary" 
+                ? "bg-white border-primary" 
                 : "border-gray-300 hover:border-primary"
             )}
-          />
+          >
+            {isSelected && (
+              <div className="absolute inset-1 bg-primary rounded-full" />
+            )}
+          </button>
         </div>
 
         <div className="flex-1 min-w-0">
