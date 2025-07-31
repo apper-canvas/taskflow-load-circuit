@@ -12,10 +12,10 @@ import Jobs from "@/components/pages/Jobs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
 
 const Dashboard = () => {
-  const [metrics, setMetrics] = useState({
+const [metrics, setMetrics] = useState({
     totalJobs: 0,
     totalCandidates: 0,
-activeJobs: 0,
+    activeJobs: 0,
     newCandidates: 0
   });
   const [recentJobs, setRecentJobs] = useState([]);
@@ -36,8 +36,8 @@ try {
 
       // Calculate metrics
       const activeJobs = jobs.filter(job => job.status === "active").length;
-      const newCandidates = candidates.filter(candidate => {
-        const appliedDate = new Date(candidate.appliedAt);
+const newCandidates = candidates.filter(candidate => {
+        const appliedDate = new Date(candidate.appliedAt_c);
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         return appliedDate >= weekAgo;
@@ -125,21 +125,21 @@ try {
                         key={job.Id}
                         className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border border-gray-100 hover:shadow-md transition-all duration-200">
                         <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900 mb-1">{job.title}</h4>
-                            <p className="text-sm text-gray-600 mb-2">{job.company}</p>
+<h4 className="font-semibold text-gray-900 mb-1">{job.title_c || job.title}</h4>
+                            <p className="text-sm text-gray-600 mb-2">{job.company_c || job.company}</p>
                             <div className="flex items-center space-x-3">
-                                <span
-                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${job.status === "active" ? "bg-green-100 text-green-800" : job.status === "draft" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"}`}>
-                                    {job.status}
+<span
+                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${(job.status_c || job.status) === "active" ? "bg-green-100 text-green-800" : (job.status_c || job.status) === "draft" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"}`}>
+                                    {job.status_c || job.status}
                                 </span>
-                                <span className="text-xs text-gray-500">
-                                    {job.applicants} applicants
+<span className="text-xs text-gray-500">
+                                    {job.applicants_c || job.applicants} applicants
                                                           </span>
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-gray-500">
-                                {format(new Date(job.createdAt), "MMM d")}
+<p className="text-xs text-gray-500">
+                                {format(new Date(job.createdAt_c || job.createdAt), "MMM d")}
                             </p>
                         </div>
                     </div>)}
@@ -162,22 +162,22 @@ try {
                         <div className="flex items-center space-x-3">
                             <div
                                 className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg">
-                                <span className="text-white font-semibold text-sm">
-                                    {candidate.name.charAt(0).toUpperCase()}
+<span className="text-white font-semibold text-sm">
+                                    {candidate.Name?.charAt(0).toUpperCase()}
                                 </span>
                             </div>
                             <div className="flex-1">
-                                <h4 className="font-semibold text-gray-900">{candidate.name}</h4>
-                                <p className="text-sm text-gray-600 mb-1">{candidate.position}</p>
+                                <h4 className="font-semibold text-gray-900">{candidate.Name}</h4>
+                                <p className="text-sm text-gray-600 mb-1">{candidate.position_c}</p>
                                 <span
-                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${candidate.status === "new" ? "bg-blue-100 text-blue-800" : candidate.status === "interviewed" ? "bg-purple-100 text-purple-800" : candidate.status === "hired" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-                                    {candidate.status}
+                                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${(candidate.status_c || candidate.status) === "new" ? "bg-blue-100 text-blue-800" : (candidate.status_c || candidate.status) === "interviewed" ? "bg-purple-100 text-purple-800" : (candidate.status_c || candidate.status) === "hired" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                    {candidate.status_c || candidate.status}
                                 </span>
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-gray-500">
-                                {format(new Date(candidate.appliedAt), "MMM d")}
+<p className="text-xs text-gray-500">
+                                {format(new Date(candidate.appliedAt_c), "MMM d")}
                             </p>
                         </div>
                     </div>)}
@@ -200,29 +200,30 @@ try {
                             <p className="text-sm text-gray-500">No upcoming interviews</p>
                         </div>
                     ) : (
-                        upcomingInterviews.map(interview => {
-                            const interviewDate = new Date(`${interview.interview.date}T${interview.interview.time}`);
+upcomingInterviews.map(interview => {
+                            const interviewData = typeof interview.interview_c === 'string' ? JSON.parse(interview.interview_c) : interview.interview_c;
+                            const interviewDate = new Date(`${interviewData.date}T${interviewData.time}`);
                             return (
                                 <div
                                     key={interview.Id}
                                     className="p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg border border-purple-200 hover:shadow-md transition-all duration-200">
                                     <div className="flex items-start justify-between">
-                                        <div className="flex-1">
+<div className="flex-1">
                                             <h4 className="font-semibold text-gray-900 mb-1">
-                                                {interview.interview.interviewer}
+                                                {interviewData.interviewer}
                                             </h4>
                                             <p className="text-sm text-gray-600 mb-2">
-                                                {interview.interview.type} Interview
+                                                {interviewData.type} Interview
                                             </p>
-                                            <div className="flex items-center space-x-2 mb-2">
+<div className="flex items-center space-x-2 mb-2">
                                                 <ApperIcon name="Clock" size={14} className="text-purple-600" />
                                                 <span className="text-sm text-purple-700">
                                                     {format(interviewDate, "MMM d, yyyy 'at' h:mm a")}
                                                 </span>
                                             </div>
-                                            {interview.interview.notes && (
+                                            {interviewData.notes && (
                                                 <p className="text-xs text-gray-500 truncate">
-                                                    {interview.interview.notes}
+                                                    {interviewData.notes}
                                                 </p>
                                             )}
                                         </div>

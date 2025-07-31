@@ -73,19 +73,19 @@ async function loadJobs() {
     setApplications(prev => [...prev, newApplication])
     
     // Update job applicants count
-    setJobs(prev => prev.map(job => 
-      job.Id === newApplication.jobId 
-        ? { ...job, applicants: (job.applicants || 0) + 1 }
+setJobs(prev => prev.map(job => 
+      job.Id === (newApplication.jobId_c?.Id || newApplication.jobId)
+? { ...job, applicants_c: ((job.applicants_c || job.applicants) || 0) + 1 }
         : job
     ))
   }
 async function handleSaveJob(jobData) {
     try {
-      // Find client company name from clientId
+// Find client company name from clientId
       const client = clients.find(c => c.Id === parseInt(jobData.clientId))
       const jobWithClient = {
         ...jobData,
-        company: client ? client.companyName : jobData.company
+        company: client ? client.companyName_c : jobData.company
       }
       
       if (editingJob) {
@@ -120,20 +120,20 @@ async function handleSaveJob(jobData) {
 }
   }
 
-  const getAppliedCandidatesForJob = (jobId) => {
-    const jobApplications = applications.filter(app => app.jobId === jobId)
+const getAppliedCandidatesForJob = (jobId) => {
+    const jobApplications = applications.filter(app => (app.jobId_c?.Id || app.jobId) === jobId)
     return jobApplications.map(app => 
-      candidates.find(candidate => candidate.Id === app.candidateId)
+      candidates.find(candidate => candidate.Id === (app.candidateId_c?.Id || app.candidateId))
     ).filter(Boolean)
   }
 
 const filteredJobs = jobs.filter(job => {
-    const searchLower = searchTerm.toLowerCase()
-    const client = clients.find(c => c.companyName === job.company)
-    return job.title.toLowerCase().includes(searchLower) ||
-           job.company.toLowerCase().includes(searchLower) ||
-           job.description.toLowerCase().includes(searchLower) ||
-           (client?.contactPerson?.toLowerCase().includes(searchLower))
+const searchLower = searchTerm.toLowerCase()
+    const client = clients.find(c => c.companyName_c === job.company_c)
+    return job.title_c?.toLowerCase().includes(searchLower) ||
+           job.company_c?.toLowerCase().includes(searchLower) ||
+           job.description_c?.toLowerCase().includes(searchLower) ||
+           (client?.contactPerson_c?.toLowerCase().includes(searchLower))
   })
   return (
     <div className="space-y-6">

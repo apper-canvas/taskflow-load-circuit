@@ -1,6 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
+import Jobs from "@/components/pages/Jobs";
 import Badge from "@/components/atoms/Badge";
 import { Card, CardContent } from "@/components/atoms/Card";
 import { cn } from "@/utils/cn";
@@ -27,30 +28,30 @@ const CandidateCard = ({ candidate, className, onView, appliedJobs = [], ...prop
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg">
-              <span className="text-white font-semibold text-lg">
-                {candidate.name.charAt(0).toUpperCase()}
+<span className="text-white font-semibold text-lg">
+                {candidate.Name?.charAt(0).toUpperCase()}
               </span>
             </div>
             <div>
               <h3 className="text-lg font-semibold font-display text-gray-900">
-                {candidate.name}
+                {candidate.Name}
               </h3>
-              <p className="text-sm text-gray-600">{candidate.position}</p>
+              <p className="text-sm text-gray-600">{candidate.position_c}</p>
             </div>
           </div>
-          <Badge variant={getStatusVariant(candidate.status)}>
-            {candidate.status}
+<Badge variant={getStatusVariant(candidate.status_c)}>
+            {candidate.status_c}
           </Badge>
         </div>
         
         <div className="space-y-2 mb-4">
-          <div className="flex items-center text-sm text-gray-600">
+<div className="flex items-center text-sm text-gray-600">
             <ApperIcon name="Mail" size={16} className="mr-2 text-gray-400" />
-            {candidate.email}
+            {candidate.email_c}
           </div>
           <div className="flex items-center text-sm text-gray-600">
             <ApperIcon name="Calendar" size={16} className="mr-2 text-gray-400" />
-            Applied {format(new Date(candidate.appliedAt), "MMM d, yyyy")}
+            Applied {format(new Date(candidate.appliedAt_c), "MMM d, yyyy")}
           </div>
         </div>
         
@@ -60,11 +61,11 @@ const CandidateCard = ({ candidate, className, onView, appliedJobs = [], ...prop
             <div className="flex items-center gap-2 mb-2">
               <ApperIcon name="Briefcase" size={14} className="text-green-600" />
               <span className="text-sm font-medium text-green-900">
-                Applied to {appliedJobs.length} Jobs
+Applied to {appliedJobs.length} Jobs
               </span>
             </div>
             <div className="text-xs text-green-700 line-clamp-2">
-              {appliedJobs.slice(0, 2).map(job => job.title).join(', ')}
+              {appliedJobs.slice(0, 2).map(job => job.title_c || job.title).join(', ')}
               {appliedJobs.length > 2 && ` and ${appliedJobs.length - 2} more`}
             </div>
           </div>
@@ -72,8 +73,8 @@ const CandidateCard = ({ candidate, className, onView, appliedJobs = [], ...prop
         
         <div className="flex items-center justify-between">
           <div className="flex items-center text-xs text-gray-500">
-            <ApperIcon name="Calendar" size={12} className="mr-1" />
-            Applied {format(new Date(candidate.appliedAt), "MMM d")}
+<ApperIcon name="Calendar" size={12} className="mr-1" />
+            Applied {format(new Date(candidate.appliedAt_c), "MMM d")}
           </div>
           
 <div className="flex items-center space-x-2">

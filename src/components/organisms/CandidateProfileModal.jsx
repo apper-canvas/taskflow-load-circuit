@@ -59,18 +59,18 @@ function CandidateProfileModal({
 
 // Separate useEffect for form data initialization to prevent infinite loops
   useEffect(() => {
-    if (candidate && (mode === "view" || mode === "edit")) {
+if (candidate && (mode === "view" || mode === "edit")) {
       setFormData({
-        name: candidate.name || "",
-        email: candidate.email || "",
-        phone: candidate.phone || "",
-        location: candidate.location || "",
-        currentJobTitle: candidate.currentJobTitle || "",
-        position: candidate.position || "",
-        experienceLevel: candidate.experienceLevel || "entry",
-        skills: candidate.skills || [],
-        resumeSummary: candidate.resumeSummary || "",
-        availability: candidate.availability || "available"
+        name: candidate.Name || "",
+        email: candidate.email_c || "",
+        phone: candidate.phone_c || "",
+        location: candidate.location_c || "",
+        currentJobTitle: candidate.currentJobTitle_c || "",
+        position: candidate.position_c || "",
+        experienceLevel: candidate.experienceLevel_c || "entry",
+        skills: typeof (candidate.skills_c) === 'string' ? candidate.skills_c.split(',') : (candidate.skills_c || []),
+        resumeSummary: candidate.resumeSummary_c || "",
+        availability: candidate.availability_c || "available"
       });
     }
   }, [candidate, mode]);
@@ -432,8 +432,8 @@ return (
                 <div className="border-t border-gray-200 pt-6">
                   <NotesList
                     entityType="candidate"
-                    entityId={candidate?.Id}
-                    entityName={candidate?.name}
+entityId={candidate?.Id}
+                    entityName={candidate?.Name}
                   />
                 </div>
 

@@ -21,13 +21,13 @@ const ClientModal = ({ isOpen, onClose, onSave, client = null }) => {
 
   useEffect(() => {
     if (client) {
-      setFormData({
-        companyName: client.companyName || "",
-        contactPerson: client.contactPerson || "",
-        email: client.email || "",
-        phone: client.phone || "",
-        address: client.address || "",
-        relationshipStatus: client.relationshipStatus || "prospect"
+setFormData({
+        companyName: client.companyName_c || "",
+        contactPerson: client.contactPerson_c || "",
+        email: client.email_c || "",
+        phone: client.phone_c || "",
+        address: client.address_c || "",
+        relationshipStatus: client.relationshipStatus_c || "prospect"
       });
     } else {
       setFormData({

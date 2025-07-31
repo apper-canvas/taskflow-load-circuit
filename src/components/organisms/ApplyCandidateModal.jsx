@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Badge from '@/components/atoms/Badge';
-import ApperIcon from '@/components/ApperIcon';
-import CandidateCard from '@/components/molecules/CandidateCard';
-import Loading from '@/components/ui/Loading';
-import Empty from '@/components/ui/Empty';
-import { candidateService } from '@/services/api/candidateService';
-import { applicationService } from '@/services/api/applicationService';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { applicationService } from "@/services/api/applicationService";
+import { candidateService } from "@/services/api/candidateService";
+import ApperIcon from "@/components/ApperIcon";
+import CandidateCard from "@/components/molecules/CandidateCard";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Candidates from "@/components/pages/Candidates";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
 
 const ApplyCandidateModal = ({ 
   isOpen, 
@@ -51,7 +52,7 @@ const ApplyCandidateModal = ({
     try {
       const [candidatesData, applicationsData] = await Promise.all([
         candidateService.getAll(),
-        applicationService.getByJobId(job.Id)
+applicationService.getByJobId(job.Id)
       ]);
       
       setCandidates(candidatesData);
@@ -66,7 +67,7 @@ const ApplyCandidateModal = ({
 
   const handleApplyCandidate = async (candidate) => {
     // Check if already applied
-    const existingApplication = applications.find(app => app.candidateId === candidate.Id);
+const existingApplication = applications.find(app => (app.candidateId_c?.Id || app.candidateId) === candidate.Id);
     if (existingApplication) {
       toast.warning('This candidate has already been applied to this job');
       return;
@@ -74,14 +75,14 @@ const ApplyCandidateModal = ({
 
     setApplying(true);
     try {
-      const newApplication = await applicationService.create({
+const newApplication = await applicationService.create({
         jobId: job.Id,
         candidateId: candidate.Id,
         notes: ''
       });
 
       setApplications(prev => [...prev, newApplication]);
-      toast.success(`${candidate.name} has been applied to ${job.title}`);
+toast.success(`${candidate.Name || candidate.name} has been applied to ${job.title_c || job.title}`);
       
       if (onApplicationCreated) {
         onApplicationCreated(newApplication);
@@ -93,19 +94,23 @@ const ApplyCandidateModal = ({
     }
   };
 
-  const isAlreadyApplied = (candidateId) => {
-    return applications.some(app => app.candidateId === candidateId);
+const isAlreadyApplied = (candidateId) => {
+    return applications.some(app => (app.candidateId_c?.Id || app.candidateId) === candidateId);
   };
 
-  const filteredCandidates = candidates.filter(candidate => {
+const filteredCandidates = candidates.filter(candidate => {
     const matchesSearch = !searchTerm || 
-      candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
+      (candidate.Name || candidate.name).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (candidate.position_c || candidate.position).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (typeof (candidate.skills_c || candidate.skills) === 'string' ? 
+        (candidate.skills_c || candidate.skills).split(',') : 
+        (candidate.skills_c || candidate.skills) || []).some(skill => 
+          skill.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-    const matchesStatus = selectedStatus === 'all' || candidate.status === selectedStatus;
-    const matchesAvailability = selectedAvailability === 'all' || candidate.availability === selectedAvailability;
-
+    const matchesStatus = selectedStatus === 'all' || (candidate.status_c || candidate.status) === selectedStatus;
+    const matchesAvailability = selectedAvailability === 'all' || (candidate.availability_c || candidate.availability) === selectedAvailability;
+    
     return matchesSearch && matchesStatus && matchesAvailability;
   });
 
@@ -137,7 +142,7 @@ const ApplyCandidateModal = ({
                 Apply Candidates
               </h2>
               <p className="text-gray-600 mt-1">
-                Select candidates to apply for "{job?.title}"
+Select candidates to apply for "{job?.title_c || job?.title}"
               </p>
             </div>
             <button

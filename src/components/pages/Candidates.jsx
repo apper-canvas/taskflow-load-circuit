@@ -105,16 +105,16 @@ function handleViewCandidate(candidate) {
   }
 
   // Helper function to determine candidate status from their applications
-  function getCandidateStatus(candidateId) {
-    const candidateApplications = applications.filter(app => app.candidateId === candidateId);
+function getCandidateStatus(candidateId) {
+    const candidateApplications = applications.filter(app => (app.candidateId_c?.Id || app.candidateId) === candidateId);
     
     if (candidateApplications.length === 0) return 'new';
     
     // Priority order for determining overall candidate status
     const statusPriority = ['hired', 'rejected', 'final_review', 'interview_scheduled', 'screening', 'applied'];
     
-    for (const status of statusPriority) {
-      if (candidateApplications.some(app => app.status === status)) {
+for (const status of statusPriority) {
+      if (candidateApplications.some(app => (app.status_c || app.status) === status)) {
         return status === 'applied' ? 'new' : 
                status === 'screening' ? 'interviewed' :
                status === 'interview_scheduled' ? 'interviewed' :
@@ -141,20 +141,20 @@ function handleViewCandidate(candidate) {
   }
 
 const getCandidateApplications = (candidateId) => {
-    const candidateApplications = applications.filter(app => app.candidateId === candidateId)
+    const candidateApplications = applications.filter(app => (app.candidateId_c?.Id || app.candidateId) === candidateId)
     return candidateApplications.map(app => {
-      const job = jobs.find(job => job.Id === app.jobId)
+      const job = jobs.find(job => job.Id === (app.jobId_c?.Id || app.jobId))
       return {
         ...app,
-        jobTitle: job?.title || 'Unknown Position'
+        jobTitle: job?.title_c || job?.title || 'Unknown Position'
       }
     })
   }
 
-  const getAppliedJobsForCandidate = (candidateId) => {
-    const candidateApplications = applications.filter(app => app.candidateId === candidateId)
+const getAppliedJobsForCandidate = (candidateId) => {
+    const candidateApplications = applications.filter(app => (app.candidateId_c?.Id || app.candidateId) === candidateId)
     return candidateApplications.map(app => 
-      jobs.find(job => job.Id === app.jobId)
+      jobs.find(job => job.Id === (app.jobId_c?.Id || app.jobId))
     ).filter(Boolean)
   }
 
@@ -181,9 +181,9 @@ function getStatusCounts() {
   
 const filteredCandidates = candidates.filter(candidate => {
     const matchesSearch = !searchTerm || 
-      candidate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.skills?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+      candidate.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      candidate.position_c?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (typeof candidate.skills_c === 'string' ? candidate.skills_c.split(',') : candidate.skills_c)?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
     
     const candidateStatus = getCandidateStatus(candidate.Id);
     const matchesStatus = statusFilter === 'all' || candidateStatus === statusFilter;

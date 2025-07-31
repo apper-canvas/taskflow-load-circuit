@@ -26,20 +26,20 @@ const [formData, setFormData] = useState({
 
 useEffect(() => {
     if (job) {
-      // Find client by company name
-      const client = clients.find(c => c.companyName === job.company)
+// Find client by company name
+      const client = clients.find(c => c.companyName_c === (job.company_c || job.company))
       setFormData({
-        title: job.title || "",
+        title: job.title_c || job.title || "",
         clientId: client ? client.Id.toString() : "",
-        company: job.company || "",
-        location: job.location || "",
-        jobType: job.jobType || "Full-time",
-        salaryMin: job.salaryMin || "",
-        salaryMax: job.salaryMax || "",
-        requiredSkills: job.requiredSkills || "",
-        experienceLevel: job.experienceLevel || "Mid-level",
-        description: job.description || "",
-        status: job.status || "active"
+company: job.company_c || job.company || "",
+        location: job.location_c || job.location || "",
+        jobType: job.jobType_c || job.jobType || "Full-time",
+        salaryMin: job.salaryMin_c || job.salaryMin || "",
+        salaryMax: job.salaryMax_c || job.salaryMax || "",
+        requiredSkills: job.requiredSkills_c || job.requiredSkills || "",
+        experienceLevel: job.experienceLevel_c || job.experienceLevel || "Mid-level",
+        description: job.description_c || job.description || "",
+        status: job.status_c || job.status || "active"
       });
 } else {
       setFormData({
@@ -177,23 +177,23 @@ const validateForm = () => {
                       value={formData.clientId}
                       onChange={(e) => {
                         handleInputChange("clientId", e.target.value)
-                        const selectedClient = clients.find(c => c.Id.toString() === e.target.value)
+const selectedClient = clients.find(c => c.Id.toString() === e.target.value)
                         if (selectedClient) {
-                          handleInputChange("company", selectedClient.companyName)
+                          handleInputChange("company", selectedClient.companyName_c)
                         }
                       }}
                       className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     >
                       <option value="">Select a client...</option>
-                      {clients.filter(c => c.relationshipStatus === 'active').map((client) => (
+{clients.filter(c => (c.relationshipStatus_c || c.relationshipStatus) === 'active').map((client) => (
                         <option key={client.Id} value={client.Id}>
-                          {client.companyName}
+                          {client.companyName_c}
                         </option>
                       ))}
                     </select>
                     {formData.clientId && (
                       <div className="mt-2 text-xs text-gray-600">
-                        Contact: {clients.find(c => c.Id.toString() === formData.clientId)?.contactPerson}
+Contact: {clients.find(c => c.Id.toString() === formData.clientId)?.contactPerson_c}
                       </div>
                     )}
                   </FormField>
@@ -320,9 +320,9 @@ const validateForm = () => {
                 {job && (
                   <div className="border-t border-gray-200 pt-6">
                     <NotesList
-                      entityType="job"
+entityType="job"
                       entityId={job.Id}
-                      entityName={job.title}
+                      entityName={job.title_c || job.title}
                     />
                   </div>
                 )}

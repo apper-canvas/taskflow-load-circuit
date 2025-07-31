@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
+import { noteService } from "@/services/api/noteService";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
+import NotesModal from "@/components/organisms/NotesModal";
 import Loading from "@/components/ui/Loading";
 import Empty from "@/components/ui/Empty";
-import NotesModal from "@/components/organisms/NotesModal";
-import { noteService } from "@/services/api/noteService";
+import Button from "@/components/atoms/Button";
 
 const NOTE_CATEGORIES = {
   "Phone Call": { icon: "Phone", color: "text-blue-600 bg-blue-50" },
@@ -31,7 +31,7 @@ const NotesList = ({ entityType, entityId, entityName }) => {
     try {
       setLoading(true);
       setError(null);
-      const notesData = await noteService.getByEntity(entityType, entityId);
+const notesData = await noteService.getByEntity(entityType, entityId);
       setNotes(notesData);
     } catch (err) {
       setError("Failed to load notes");
@@ -87,9 +87,9 @@ const handleSaveNote = async (noteData) => {
     }
   };
 
-  const filteredNotes = filter === "all" 
+const filteredNotes = filter === "all" 
     ? notes 
-    : notes.filter(note => note.category === filter);
+    : notes.filter(note => note.category_c === filter);
 
   const categories = ["all", ...Object.keys(NOTE_CATEGORIES)];
 
@@ -154,8 +154,8 @@ const handleSaveNote = async (noteData) => {
         />
       ) : (
         <div className="space-y-3">
-          {filteredNotes.map((note) => {
-            const category = NOTE_CATEGORIES[note.category];
+{filteredNotes.map((note) => {
+            const category = NOTE_CATEGORIES[note.category_c];
             const canEdit = noteService.canEdit(note);
             
             return (
@@ -169,11 +169,10 @@ const handleSaveNote = async (noteData) => {
                       <ApperIcon name={category?.icon || "FileText"} size={16} />
                     </div>
                     <div>
-                      <span className="font-medium text-gray-900">{note.category}</span>
+<span className="font-medium text-gray-900">{note.category_c}</span>
                       <div className="text-xs text-gray-500">
-                        {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })} 
-                        {note.createdBy && ` by ${note.createdBy}`}
-                        {note.updatedAt !== note.createdAt && (
+                        {formatDistanceToNow(new Date(note.createdAt_c), { addSuffix: true })}
+{note.updatedAt_c !== note.createdAt_c && (
                           <span className="ml-1">(edited)</span>
                         )}
                       </div>
@@ -199,9 +198,8 @@ const handleSaveNote = async (noteData) => {
                     </div>
                   )}
                 </div>
-                
-                <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
-                  {note.content}
+<p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
+                  {note.content_c}
                 </p>
               </div>
             );

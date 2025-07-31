@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { toast } from "react-toastify";
-import ApperIcon from "@/components/ApperIcon";
-import FormField from "@/components/molecules/FormField";
-import Textarea from "@/components/atoms/Textarea";
+import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/atoms/Button";
+import Textarea from "@/components/atoms/Textarea";
+import FormField from "@/components/molecules/FormField";
+import ApperIcon from "@/components/ApperIcon";
+import { toast } from "react-toastify";
 
 const NOTE_CATEGORIES = [
-  { value: "Phone Call", icon: "Phone", color: "text-blue-600" },
-  { value: "Email", icon: "Mail", color: "text-green-600" },
-  { value: "Meeting", icon: "Users", color: "text-purple-600" },
-  { value: "Follow-up", icon: "Clock", color: "text-orange-600" }
+  "Phone Call",
+  "Email", 
+  "Meeting",
+  "Follow-up"
 ];
 
 const NotesModal = ({ 
   isOpen, 
   onClose, 
   onSave, 
-  note = null, 
-  entityType, 
+  note = null,
+  entityType,
   entityId,
-  entityName 
+  entityName
 }) => {
   const [formData, setFormData] = useState({
     category: "Phone Call",
@@ -32,8 +32,8 @@ const NotesModal = ({
   useEffect(() => {
     if (note) {
       setFormData({
-        category: note.category || "Phone Call",
-        content: note.content || ""
+        category: note.category_c || "Phone Call",
+        content: note.content_c || ""
       });
     } else {
       setFormData({
@@ -47,28 +47,22 @@ const NotesModal = ({
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.content.trim()) {
-      newErrors.content = "Note content is required";
+    if (!formData.category) {
+      newErrors.category = "Category is required";
     }
     
-    if (formData.content.trim().length > 1000) {
-      newErrors.content = "Note content must be less than 1000 characters";
+    if (!formData.content?.trim()) {
+      newErrors.content = "Content is required";
     }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    e.stopPropagation();
     
     if (!validateForm()) {
-      return;
-    }
-
-    // Prevent accidental submissions
-    if (isSubmitting) {
       return;
     }
 
@@ -78,22 +72,16 @@ const handleSubmit = async (e) => {
       const noteData = {
         ...formData,
         entityType,
-        entityId
-};
+        entityId,
+        content: formData.content.trim()
+      };
       
       await onSave(noteData);
+      onClose();
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Failed to save note. Please try again.");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleBackdropClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.target === e.currentTarget && !isSubmitting) {
-      onClose();
     }
   };
 
@@ -104,136 +92,96 @@ const handleSubmit = async (e) => {
     }
   };
 
-  const selectedCategory = NOTE_CATEGORIES.find(cat => cat.value === formData.category);
+  if (!isOpen) return null;
 
   return (
-<AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={handleBackdropClick}
-          />
-          
-          <div className="flex min-h-full items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl"
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-white rounded-xl shadow-xl w-full max-w-md"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b">
+            <div>
+              <h2 className="text-xl font-semibold font-display text-gray-900">
+                {note ? "Edit Note" : "Add Note"}
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {entityName ? `for ${entityName}` : `for ${entityType} ${entityId}`}
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <div>
-                  <h2 className="text-xl font-bold font-display text-gray-900">
-                    {note ? "Edit Note" : "Add Note"}
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {entityType === 'candidate' ? 'Candidate' : 'Application'}: {entityName}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <ApperIcon name="X" size={20} />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="flex flex-col">
-                <div className="p-6 space-y-6">
-                  <FormField label="Category" required>
-                    <div className="grid grid-cols-2 gap-3">
-                      {NOTE_CATEGORIES.map((category) => (
-                        <button
-                          key={category.value}
-                          type="button"
-                          onClick={() => handleInputChange("category", category.value)}
-                          className={`flex items-center p-3 rounded-lg border-2 transition-all ${
-                            formData.category === category.value
-                              ? "border-primary-500 bg-primary-50"
-                              : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <ApperIcon 
-                            name={category.icon} 
-                            size={16} 
-                            className={`mr-2 ${
-                              formData.category === category.value
-                                ? "text-primary-600"
-                                : category.color
-                            }`}
-                          />
-                          <span className={`text-sm font-medium ${
-                            formData.category === category.value
-                              ? "text-primary-900"
-                              : "text-gray-700"
-                          }`}>
-                            {category.value}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </FormField>
-
-                  <FormField
-                    label="Note Content"
-                    required
-                    error={errors.content}
-                  >
-                    <Textarea
-                      placeholder={`Add your ${formData.category.toLowerCase()} notes here...`}
-                      value={formData.content}
-                      onChange={(e) => handleInputChange("content", e.target.value)}
-                      error={errors.content}
-                      rows={6}
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>Be specific about the interaction and next steps</span>
-                      <span>{formData.content.length}/1000</span>
-                    </div>
-                  </FormField>
-                </div>
-
-                <div className="flex items-center space-x-3 p-6 border-t bg-gray-50">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <ApperIcon name="Loader2" size={16} className="mr-2 animate-spin" />
-                        {note ? "Updating..." : "Adding..."}
-                      </>
-                    ) : (
-                      <>
-                        <ApperIcon 
-                          name={selectedCategory?.icon || "Plus"} 
-                          size={16} 
-                          className="mr-2" 
-                        />
-                        {note ? "Update Note" : "Add Note"}
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={onClose}
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </motion.div>
+              <ApperIcon name="X" size={20} />
+            </button>
           </div>
-        </div>
-      )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <FormField label="Category" required error={errors.category}>
+              <select
+                value={formData.category}
+                onChange={(e) => handleInputChange("category", e.target.value)}
+                className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+              >
+                {NOTE_CATEGORIES.map(category => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+
+            <FormField label="Content" required error={errors.content}>
+              <Textarea
+                value={formData.content}
+                onChange={(e) => handleInputChange("content", e.target.value)}
+                placeholder="Enter your note content..."
+                rows={5}
+                error={errors.content}
+              />
+            </FormField>
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1"
+              >
+                {isSubmitting ? (
+                  <>
+                    <ApperIcon name="Loader2" size={16} className="animate-spin mr-2" />
+                    {note ? "Updating..." : "Adding..."}
+                  </>
+                ) : (
+                  note ? "Update Note" : "Add Note"
+                )}
+              </Button>
+            </div>
+          </form>
+        </motion.div>
+      </motion.div>
     </AnimatePresence>
   );
 };
