@@ -1,42 +1,38 @@
-import React from 'react'
-import { cn } from '@/utils/cn'
-import Button from '@/components/atoms/Button'
-import ApperIcon from '@/components/ApperIcon'
+import React from "react";
+import Button from "@/components/atoms/Button";
+import ApperIcon from "@/components/ApperIcon";
+import { cn } from "@/utils/cn";
 
 const Error = ({ 
-  message = "Something went wrong. Please try again.",
+  message = "Something went wrong. Please try again.", 
   onRetry,
   className 
 }) => {
   return (
-    <div className={cn(
-      "flex flex-col items-center justify-center py-12 px-4",
-      className
-    )}>
-      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-error/10 to-red-100 flex items-center justify-center mb-4">
-        <ApperIcon name="AlertTriangle" size={32} className="text-error" />
+    <div className={cn("flex flex-col items-center justify-center py-12 px-6 text-center", className)}>
+      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center mb-6 shadow-lg">
+        <ApperIcon name="AlertTriangle" size={32} className="text-red-600" />
       </div>
       
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+      <h3 className="text-xl font-semibold font-display text-gray-900 mb-2">
         Oops! Something went wrong
       </h3>
       
-      <p className="text-gray-600 text-center mb-6 max-w-md">
+      <p className="text-gray-600 mb-6 max-w-md">
         {message}
       </p>
       
       {onRetry && (
         <Button 
           onClick={onRetry}
-          variant="primary"
-          className="gap-2"
+          className="flex items-center space-x-2"
         >
           <ApperIcon name="RefreshCw" size={16} />
-          Try Again
+          <span>Try Again</span>
         </Button>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Error
+export default Error;
